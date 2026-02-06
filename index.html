@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advanced Calculator</title>
+
+<style>
+:root {
+    --bg: #1e1e1e;
+    --card: #2a2a2a;
+    --btn: #333;
+    --text: #ffffff;
+    --accent: #4caf50;
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+}
+
+.calculator {
+    width: 360px;
+    background: var(--card);
+    border-radius: 18px;
+    box-shadow: 10px 10px 30px #111, -10px -10px 30px #333;
+    padding: 20px;
+    color: var(--text);
+}
+
+.display {
+    background: #000;
+    border-radius: 10px;
+    padding: 15px;
+    font-size: 26px;
+    text-align: right;
+    min-height: 60px;
+    overflow-x: auto;
+}
+
+.history {
+    font-size: 13px;
+    color: #aaa;
+    min-height: 20px;
+    text-align: right;
+    margin-bottom: 6px;
+}
+
+.buttons {
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+button {
+    height: 55px;
+    border: none;
+    border-radius: 12px;
+    background: var(--btn);
+    color: var(--text);
+    font-size: 18px;
+    cursor: pointer;
+    box-shadow: inset 2px 2px 5px #111, inset -2px -2px 5px #444;
+}
+
+button:active {
+    box-shadow: inset 1px 1px 2px #000;
+}
+
+.operator { color: #ffb74d; }
+.equal { background: var(--accent); }
+.clear { color: #ef5350; }
+.func { color: #81d4fa; }
+.zero { grid-column: span 2; }
+
+</style>
+</head>
+
+<body>
+
+<div class="calculator">
+    <div class="history" id="history"></div>
+    <div class="display" id="display">0</div>
+
+    <div class="buttons">
+        <!-- Top row -->
+        <button class="clear" onclick="clearAll()">C</button>
+        <button onclick="back()">⌫</button>
+        <button class="func" onclick="sqrt()">√</button>
+        <button class="func" onclick="square()">x²</button>
+
+        <!-- Scientific row -->
+        <button class="func" onclick="sin()">sin</button>
+        <button class="func" onclick="cos()">cos</button>
+        <button class="func" onclick="tan()">tan</button>
+        <button class="operator" onclick="add('/')">÷</button>
+
+        <!-- Number grid + operators -->
+        <button onclick="add('7')">7</button>
+        <button onclick="add('8')">8</button>
+        <button onclick="add('9')">9</button>
+        <button class="operator" onclick="add('*')">×</button>
+
+        <button onclick="add('4')">4</button>
+        <button onclick="add('5')">5</button>
+        <button onclick="add('6')">6</button>
+        <button class="operator" onclick="add('-')">−</button>
+
+        <button onclick="add('1')">1</button>
+        <button onclick="add('2')">2</button>
+        <button onclick="add('3')">3</button>
+        <button class="operator" onclick="add('+')">+</button>
+
+        <!-- Bottom row -->
+        <button class="zero" onclick="add('0')">0</button>
+        <button onclick="add('.')">.</button>
+        <button class="equal" onclick="calculate()">=</button>
+    </div>
+</div>
+
+<script>
+const display = document.getElementById("display");
+const history = document.getElementById("history");
+
+function add(val) {
+    if (display.innerText === "0") display.innerText = val;
+    else display.innerText += val;
+}
+
+function clearAll() {
+    display.innerText = "0";
+    history.innerText = "";
+}
+
+function back() {
+    display.innerText = display.innerText.length > 1
+        ? display.innerText.slice(0, -1)
+        : "0";
+}
+
+function calculate() {
+    try {
+        history.innerText = display.innerText;
+        display.innerText = eval(display.innerText);
+    } catch {
+        display.innerText = "Error";
+    }
+}
+
+function sin() { display.innerText = Math.sin(eval(display.innerText) * Math.PI / 180); }
+function cos() { display.innerText = Math.cos(eval(display.innerText) * Math.PI / 180); }
+function tan() { display.innerText = Math.tan(eval(display.innerText) * Math.PI / 180); }
+function sqrt() { display.innerText = Math.sqrt(eval(display.innerText)); }
+function square() { display.innerText = Math.pow(eval(display.innerText), 2); }
+
+document.addEventListener("keydown", e => {
+    if ("0123456789+-*/.".includes(e.key)) add(e.key);
+    if (e.key === "Enter") calculate();
+    if (e.key === "Backspace") back();
+    if (e.key === "Escape") clearAll();
+});
+</script>
+
+</body>
+</html>
